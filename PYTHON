@@ -1,0 +1,71 @@
+from forex_python.converter import CurrencyRates, CurrencyCodes
+from forex_python.bitcoin import BtcConverter
+from datetime import datetime
+
+def main_menu():
+    print("\n=== Currency Converter ===")
+    print("1. Convert Currency")
+    print("2. Historical Exchange Rate")
+    print("3. Bitcoin Conversion")
+    print("4. Exit")
+
+def convert_currency():
+    currency_rates = CurrencyRates()
+    currency_codes = CurrencyCodes()
+    
+    from_currency = input("Enter the base currency (e.g., USD): ").upper()
+    to_currency = input("Enter the target currency (e.g., EUR): ").upper()
+    amount = float(input("Enter the amount to convert: "))
+    
+    try:
+        converted_amount = currency_rates.convert(from_currency, to_currency, amount)
+        symbol = currency_codes.get_symbol(to_currency)
+        print(f"{amount} {from_currency} = {symbol}{converted_amount:.2f} {to_currency}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+def historical_exchange_rate():
+    currency_rates = CurrencyRates()
+    
+    from_currency = input("Enter the base currency (e.g., USD): ").upper()
+    to_currency = input("Enter the target currency (e.g., EUR): ").upper()
+    date_input = input("Enter the date (YYYY-MM-DD): ")
+    
+    try:
+        date = datetime.strptime(date_input, "%Y-%m-%d")
+        rate = currency_rates.get_rate(from_currency, to_currency, date)
+        print(f"Exchange rate on {date_input}: 1 {from_currency} = {rate:.2f} {to_currency}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+def bitcoin_conversion():
+    btc_converter = BtcConverter()
+    
+    to_currency = input("Enter the currency to convert Bitcoin to (e.g., USD): ").upper()
+    amount_btc = float(input("Enter the amount of Bitcoin: "))
+    
+    try:
+        converted_amount = btc_converter.convert_btc_to_cur(amount_btc, to_currency)
+        print(f"{amount_btc} BTC = {converted_amount:.2f} {to_currency}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+def main():
+    while True:
+        main_menu()
+        choice = input("Enter your choice: ")
+        
+        if choice == '1':
+            convert_currency()
+        elif choice == '2':
+            historical_exchange_rate()
+        elif choice == '3':
+            bitcoin_conversion()
+        elif choice == '4':
+            print("Exiting... Thank you for using the Currency Converter!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
